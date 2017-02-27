@@ -1,0 +1,29 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <!--
+    This jelly script is used for per-project configuration.
+
+    See global.jelly for a general discussion about jelly script.
+  -->
+
+  <!--
+    Creates a text field that shows the value of the "name" property.
+    When submitted, it will be passed to the corresponding constructor parameter.
+  -->
+  <f:entry title="Test job to run" field="testJob">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="Inclusion file name in the test job" field="includesPatternFile">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="Test report directory in the test job" field="testReportFiles">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="Regular expression for picking up changed files. To use matched group, put parentheses around." field="regex">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="Regular expression for tests target. You can use matched group by  " field="testTargetRegex">
+    <f:textbox />
+  </f:entry>
+
+</j:jelly>
