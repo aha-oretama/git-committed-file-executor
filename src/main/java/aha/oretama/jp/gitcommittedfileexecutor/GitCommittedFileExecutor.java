@@ -9,6 +9,7 @@ import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Result;
+import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.plugins.git.GitChangeSet;
 import hudson.plugins.parameterizedtrigger.AbstractBuildParameterFactory;
@@ -21,6 +22,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 
 import org.apache.commons.io.Charsets;
+import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -114,9 +116,24 @@ public class GitCommittedFileExecutor extends Builder {
         return true;
     }
 
-    static List<String> getExpressionsForTestInclusion(AbstractBuild<?,?> build, TaskListener listener, String regex, String testTargetRegex) {
+    static List<String> getExpressionsForTestInclusion(Run build, TaskListener listener, String regex, String testTargetRegex) {
 
-        List<GitChangeSet> gitChangeSets = Stream.of(build.getChangeSet().getItems()).map(item -> (GitChangeSet)item).collect(Collectors.toList());
+        List<ChangeLogSet<? extends ChangeLogSet.Entry>> changeItems = null;
+
+        if(build instanceof WorkflowRun) {
+            changeItems = ((WorkflowRun) build).getChangeSets();
+        }else if(build instanceof AbstractBuild) {
+            changeItems = ((AbstractBuild) build).getChangeSets();
+        }else {
+            return new ArrayList<>();
+        }
+
+        List<GitChangeSet> gitChangeSets = new ArrayList<>();
+        for (ChangeLogSet changeLogSet :changeItems) {
+            if(changeLogSet.getKind().equals("git")){
+                gitChangeSets.addAll(Stream.of(changeLogSet.getItems()).map(item -> (GitChangeSet)item).collect(Collectors.toList()));
+            }
+        }
 
         List<String> paths = new ArrayList<>();
         for (GitChangeSet gitChangeSet: gitChangeSets) {

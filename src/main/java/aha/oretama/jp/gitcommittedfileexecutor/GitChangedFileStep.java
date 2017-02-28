@@ -2,7 +2,6 @@ package aha.oretama.jp.gitcommittedfileexecutor;
 
 import com.google.inject.Inject;
 import hudson.Extension;
-import hudson.model.AbstractBuild;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 
@@ -60,7 +59,7 @@ public class GitChangedFileStep extends AbstractStepImpl {
 
         @Override
         protected List<String> run() throws Exception {
-            return GitCommittedFileExecutor.getExpressionsForTestInclusion((AbstractBuild<?, ?>) build,listener, step.regex, step.testTargetRegex);
+            return GitCommittedFileExecutor.getExpressionsForTestInclusion(build,listener, step.regex, step.testTargetRegex);
         }
     }
 }
